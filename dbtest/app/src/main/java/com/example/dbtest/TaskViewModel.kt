@@ -32,6 +32,8 @@ class TaskViewModel(private val repository: TaskRepository): ViewModel() {
         _name.value = page
     }
     // weather data
+    private val _celsiusTemperature = MutableStateFlow(0.0)
+    val celsiusTemperature: StateFlow<Double> = _celsiusTemperature
     private val _roundedFahrenheitTemp = MutableStateFlow("")
     val roundedFahrenheitTemp: StateFlow<String> = _roundedFahrenheitTemp
     private val _windspeed = MutableStateFlow("")
@@ -40,6 +42,9 @@ class TaskViewModel(private val repository: TaskRepository): ViewModel() {
     val weatherdescription: StateFlow<String> = _weatherdescription
     private val _recom = MutableStateFlow("")
     val recom: StateFlow<String> = _recom
+    fun SetcelsiusTemperature(data: Double) {
+        _celsiusTemperature.value = data
+    }
     fun SetroundedFahrenheitTemp(data: String) {
         _roundedFahrenheitTemp.value = data
     }

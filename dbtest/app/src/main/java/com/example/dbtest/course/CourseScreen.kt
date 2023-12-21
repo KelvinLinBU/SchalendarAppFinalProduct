@@ -75,10 +75,12 @@ import kotlinx.coroutines.withContext
 import java.net.URL
 import java.time.LocalDate
 
-
+//the fun used to delete the course we no longer needed
 fun delCourse(taskViewModel: TaskViewModel,course: Course){
     taskViewModel.delCourse(course)
 }
+// the Course card for the recycle view
+// I create that one and also the task one by following the Android Studio teaching website
 @Composable
 private fun CourseContent(context: Context,taskViewModel: TaskViewModel,course: Course) {
     val search = taskViewModel.getAddress(course.code!!).collectAsState(
@@ -201,7 +203,7 @@ private fun CourseContent(context: Context,taskViewModel: TaskViewModel,course: 
         }
     }
 }
-
+// Connect the card with the theme and set it as a card
 @Composable
 fun CourseFinish(context: Context,taskViewModel: TaskViewModel, course: Course) {
     BasicsCodelabTheme {
@@ -215,6 +217,7 @@ fun CourseFinish(context: Context,taskViewModel: TaskViewModel, course: Course) 
         }
     }
 }
+// show that when people are not login or there is no course in the database
 @Composable
 fun NoCoursesScreen(taskViewModel: TaskViewModel) {
     val name = taskViewModel.name.collectAsState().value
@@ -238,13 +241,8 @@ fun NoCoursesScreen(taskViewModel: TaskViewModel) {
 
     }
 }
-@Composable
-fun WeatherIcon() {
-    Icon(
-        painter = painterResource(id = R.drawable.icon_weather),
-        contentDescription = "Empty Task"
-    )
-}
+
+// the laczyColumn, same thing with the recycleview
 @Composable
 private fun CoursesList(
     context: Context,
@@ -264,7 +262,7 @@ private fun CoursesList(
     }
 }
 
-
+// that bar allowed user to see the date, choose backward/forward, or access the weather page
 @Composable
 fun TopBar(context:Context,taskViewModel:TaskViewModel, week:String,left:()->Unit,right:()->Unit,wea:()->Unit) {
     BasicsCodelabTheme {
@@ -289,7 +287,16 @@ fun TopBar(context:Context,taskViewModel:TaskViewModel, week:String,left:()->Uni
                         style = MaterialTheme.typography.headlineMedium.copy()
                     )
                     IconButton(onClick = wea) {
-                        WeatherIcon()
+                        val tem = taskViewModel.celsiusTemperature.collectAsState().value
+                        when {
+                            tem < 0 -> WeatherIconCold()
+                            tem in 0.0..10.0 -> WeatherIconChil()
+                            tem in 10.0..20.0 -> WeatherIconCool()
+                            tem in 20.0..30.0 -> WeatherIconPle()
+                            tem in 30.0..35.0 -> WeatherIconWarm()
+                            tem > 35.0 -> WeatherIconHot()
+                            else -> WeatherIconNotSure()
+                        }
                     }
 
                 }
@@ -324,7 +331,7 @@ fun kelvinToCelsius(kelvin: Double): Double {
 fun kelvinToFahrenheit(kelvin: Double): Double {
     return kelvin * 9/5 - 459.67
 }
-
+// Everything in the course page except adding button
 @Composable
 fun CourseNoAdd(context: Context,taskViewModel:TaskViewModel,modifier: Modifier){
     var shouldShowWeather by rememberSaveable { mutableStateOf(false) }
@@ -339,10 +346,12 @@ fun CourseNoAdd(context: Context,taskViewModel:TaskViewModel,modifier: Modifier)
             taskViewModel.Setwindspeed("Wind: $windSpeed")
             taskViewModel.Setweatherdescription("$weatherDescription")
             taskViewModel.Setrecom(getTemperatureRecommendation(celsiusTemperature))
+            taskViewModel.SetcelsiusTemperature(celsiusTemperature)
         }
     }
     Surface(modifier, color = MaterialTheme.colorScheme.background) {
         if (shouldShowWeather) {
+            // weather page
             weatherSet(context,modifier,taskViewModel)
         } else {
             var today = LocalDate.now().dayOfWeek.toString()

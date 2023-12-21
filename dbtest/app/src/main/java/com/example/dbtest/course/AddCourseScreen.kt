@@ -57,6 +57,7 @@ import java.time.LocalDate
 import java.time.LocalTime
 import java.util.Calendar
 import java.util.Date
+// DropdownMenu used to get the course type and building code
 @Composable
 fun DropdownMenu(options:List<String>, selectedOption: MutableState<String>) {
     Box(modifier = Modifier){
@@ -81,7 +82,7 @@ fun DropdownMenu(options:List<String>, selectedOption: MutableState<String>) {
     }
 }
 
-
+// MultiSelectCheckBox for the frequency
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun MultiSelectCheckBox(options:List<String>,checkedState: SnapshotStateMap<String, Boolean>) {
@@ -109,7 +110,7 @@ fun MultiSelectCheckBox(options:List<String>,checkedState: SnapshotStateMap<Stri
         }
     }
 }
-
+// This one assembled all the course input and insert the new course after click the add button
 @Composable
 fun AddCourse(
     context: Context,
@@ -210,7 +211,7 @@ fun AddCourse(
 
             }
         }
-
+// The function to add the course
 fun addCourse(context: Context,taskViewModel: TaskViewModel,title: String, type: String, code: String, room: String,
                start: String,end:String,mon: Boolean,tue: Boolean, wed:Boolean, thu: Boolean, fri: Boolean) {
     Log.d("course", "reach here")
@@ -218,6 +219,7 @@ fun addCourse(context: Context,taskViewModel: TaskViewModel,title: String, type:
     Log.d("course", "$course")
     taskViewModel.addCourse(course)
 }
+// This is the final one for thr AddCourse Screen, combine the addcourse function and also return to course function
 @Composable
 fun AddCoursePage(context: Context,
                 taskViewModel: TaskViewModel,
