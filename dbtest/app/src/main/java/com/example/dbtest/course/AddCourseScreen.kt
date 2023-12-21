@@ -58,7 +58,7 @@ import java.time.LocalTime
 import java.util.Calendar
 import java.util.Date
 @Composable
-fun DropdownMenuSample(options:List<String>, selectedOption: MutableState<String>) {
+fun DropdownMenu(options:List<String>, selectedOption: MutableState<String>) {
     Box(modifier = Modifier){
         var expanded by remember { mutableStateOf(false) }
         Button(onClick = { expanded = true }) {
@@ -66,7 +66,7 @@ fun DropdownMenuSample(options:List<String>, selectedOption: MutableState<String
         }
         DropdownMenu(
             expanded = expanded,
-            onDismissRequest = { expanded = false } // 点击外部时关闭菜单
+            onDismissRequest = { expanded = false }
         ) {
             options.forEach { option ->
                 DropdownMenuItem(
@@ -77,7 +77,7 @@ fun DropdownMenuSample(options:List<String>, selectedOption: MutableState<String
                     })
             }
         }
-        
+
     }
 }
 
@@ -119,7 +119,7 @@ fun AddCourse(
 ) {
     var title by remember { mutableStateOf("")}
     var type = remember { mutableStateOf(context.getString(R.string.Lecture)) }
-    var code by remember { mutableStateOf("") }
+    var code = remember { mutableStateOf("Select your room") }
     var room by remember { mutableStateOf("") }
     var start = remember { mutableStateOf("") }
     var end = remember { mutableStateOf("") }
@@ -130,6 +130,7 @@ fun AddCourse(
         stringResource(id = R.string.Dis),
         stringResource(id = R.string.Meeting)
     )
+    val options1 = taskViewModel.allBuildings.collectAsState(initial = emptyList()).value
     val options = listOf(
         stringResource(id = R.string.Monday),
         stringResource(id = R.string.Tuesday),
@@ -148,8 +149,13 @@ fun AddCourse(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         MyTextInput("Title", title) { title = it }
-        DropdownMenuSample(options0,type)
-        MyTextInput("Code", code) { code = it }
+        Row(modifier = Modifier
+            .fillMaxWidth()
+            .padding(1.dp),
+            horizontalArrangement = Arrangement.SpaceBetween){
+            DropdownMenu(options0,type)
+            DropdownMenu(options1,code)
+        }
         MyTextInput("Room", room) { room = it }
         showTimePicker(context, start,stringResource(id = R.string.course_select_start))
         showTimePicker(context, end,stringResource(id = R.string.course_select_end))
@@ -166,7 +172,7 @@ fun AddCourse(
                     if (title ==""){
                         val warn = context.getString(R.string.task_noTitle)
                         Toast.makeText(context,warn,Toast.LENGTH_SHORT).show()}
-                    else if( type.value == null){
+                    else if( type.value == "Select your room"){
                         val warn = context.getString(R.string.course_noType)
                         Toast.makeText(context,warn,Toast.LENGTH_SHORT).show()}
                     else if(start.value ==""||end.value ==""){
@@ -182,7 +188,7 @@ fun AddCourse(
                         if(mon == false && tue == false && wed == false && thu == false && fri == false  ){
 
                         }else{
-                            addCourse(context, taskViewModel, title, type.value,code,room,start.value,end.value,mon!!,tue!!,wed!!,thu!!,fri!!)
+                            addCourse(context, taskViewModel, title, type.value,code.value,room,start.value,end.value,mon!!,tue!!,wed!!,thu!!,fri!!)
                             val text = context.getString(R.string.task_add) + " " + title
                             Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
                         }

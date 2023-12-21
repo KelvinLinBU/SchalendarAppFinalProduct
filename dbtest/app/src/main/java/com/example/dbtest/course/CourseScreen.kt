@@ -6,6 +6,9 @@ import androidx.compose.runtime.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
@@ -77,7 +80,9 @@ fun delCourse(taskViewModel: TaskViewModel,course: Course){
     taskViewModel.delCourse(course)
 }
 @Composable
-private fun CourseContent(taskViewModel: TaskViewModel,course: Course) {
+private fun CourseContent(context: Context,taskViewModel: TaskViewModel,course: Course) {
+    val search = taskViewModel.getAddress(course.code!!).collectAsState(
+        initial = "").value
     var expanded by remember { mutableStateOf(false) }
     Row(
         modifier = Modifier
@@ -155,7 +160,21 @@ private fun CourseContent(taskViewModel: TaskViewModel,course: Course) {
                     Spacer(modifier = Modifier.width(10.dp))
                     Button(
                         modifier = Modifier.weight(1f),
-                        onClick = { //using Google map
+                        onClick = {
+                            //using Google map
+                            Log.d("MyTag", "$search")
+                            val gmmIntentUri = Uri.parse("geo:0,0?q=$search")
+                            Log.d("MyUri", "$gmmIntentUri")
+                            val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
+                            mapIntent.setPackage("com.google.android.apps.maps")
+                            val a = mapIntent.resolveActivity(context.packageManager)
+                            Log.d("My", "$a")
+                            if (mapIntent.resolveActivity(context.packageManager) != null) {
+                                context.startActivity(mapIntent)
+                            } else {
+                                Toast.makeText(context, "Download Google Map to use that function!!!",
+                                    Toast.LENGTH_SHORT).show()
+                            }
                         },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color.Gray,
@@ -184,7 +203,7 @@ private fun CourseContent(taskViewModel: TaskViewModel,course: Course) {
 }
 
 @Composable
-fun CourseFinish(taskViewModel: TaskViewModel, course: Course) {
+fun CourseFinish(context: Context,taskViewModel: TaskViewModel, course: Course) {
     BasicsCodelabTheme {
         Card(
             colors = CardDefaults.cardColors(
@@ -192,7 +211,7 @@ fun CourseFinish(taskViewModel: TaskViewModel, course: Course) {
             ),
             modifier = Modifier.padding(vertical = 4.dp, horizontal = 8.dp)
         ) {
-            CourseContent(taskViewModel,course)
+            CourseContent(context, taskViewModel,course)
         }
     }
 }
@@ -222,6 +241,7 @@ fun WeatherIcon() {
 }
 @Composable
 private fun CoursesList(
+    context: Context,
     taskViewModel: TaskViewModel,
     modifier: Modifier = Modifier,
     courses: List<Course>
@@ -231,7 +251,7 @@ private fun CoursesList(
     }else {
         LazyColumn(modifier = modifier.padding(vertical = 4.dp)) {
             items(items = courses) { task ->
-                CourseFinish(taskViewModel, task)
+                CourseFinish(context, taskViewModel, task)
             }
         }
     }
@@ -285,7 +305,7 @@ fun TopBar(context:Context,taskViewModel:TaskViewModel, week:String,left:()->Uni
             } else{
                 courses = taskViewModel.allFC.collectAsState(initial = emptyList()).value
             }
-            CoursesList(taskViewModel,modifier= Modifier, courses)
+            CoursesList(context, taskViewModel,modifier= Modifier, courses)
         }
 
     }
@@ -388,7 +408,9 @@ fun CourseApp(context: Context,taskViewModel: TaskViewModel, modifier: Modifier 
             CourseNoAdd(context,taskViewModel,modifier)
             FloatingActionButton(
                 onClick = onAddChange,
-                modifier = Modifier.align(Alignment.BottomEnd).padding(bottom = 90.dp, end = 10.dp)
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(bottom = 90.dp, end = 10.dp)
             ) {
                 Icon(
                     imageVector = Icons.Default.Add,

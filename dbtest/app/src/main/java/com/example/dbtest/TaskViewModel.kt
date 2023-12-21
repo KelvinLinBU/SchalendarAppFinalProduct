@@ -54,7 +54,7 @@ class TaskViewModel(private val repository: TaskRepository): ViewModel() {
     val allWC: Flow<List<Course>> = repository.allWCourse
     val allThC: Flow<List<Course>> = repository.allThCourse
     val allFC: Flow<List<Course>> = repository.allFCourse
-
+    val allBuildings: Flow<List<String>> = repository.allBuildings
 
     fun addTask(task: Task) = viewModelScope.launch {
         repository.addTask(task)
@@ -68,6 +68,8 @@ class TaskViewModel(private val repository: TaskRepository): ViewModel() {
     fun delCourse(course: Course) = viewModelScope.launch {
         repository.delCourse(course)
     }
+    fun getAddress(abb: String):Flow<String> = repository.getAddress(abb)
+
     //suspend fun getAddress(abb: String): Building = repository.getAddress(abb)
     //fun addBuilding(building: Building) = viewModelScope.launch {
     //    repository.addBuilding(building)

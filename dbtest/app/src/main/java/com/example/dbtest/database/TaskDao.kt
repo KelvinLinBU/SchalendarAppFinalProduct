@@ -39,12 +39,12 @@ interface CourseDao{
 
 @Dao
 interface BuildingDao{
-    /*@Query("SELECT * FROM building")
-    suspend fun getBuildings(): List<Building>*/
-    @Query("SELECT * FROM building WHERE abb=(:abb)")
-    suspend fun getAddress(abb: String): Building
+    @Query("SELECT abb FROM building ORDER BY abb ASC")
+    fun getBuildings(): Flow<List<String>>
+
+    @Query("SELECT address FROM building WHERE abb=(:abb)")
+    fun getAddress(abb: String): Flow<String>
 
     @Insert
     suspend fun addBuilding(building: Building)
-
 }
