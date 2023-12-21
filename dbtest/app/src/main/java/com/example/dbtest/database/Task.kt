@@ -24,6 +24,7 @@ data class Course(
     @ColumnInfo val code: String? = null,
     @ColumnInfo val room: String? = null,
     @ColumnInfo val start: String,
+    @ColumnInfo val end: String,
     @ColumnInfo val mon: Boolean,
     @ColumnInfo val tue: Boolean,
     @ColumnInfo val wed: Boolean,

@@ -122,6 +122,7 @@ fun AddCourse(
     var code by remember { mutableStateOf("") }
     var room by remember { mutableStateOf("") }
     var start = remember { mutableStateOf("") }
+    var end = remember { mutableStateOf("") }
     val options0 = listOf(
         stringResource(id = R.string.Lecture),
         stringResource(id = R.string.Independent),
@@ -151,6 +152,7 @@ fun AddCourse(
         MyTextInput("Code", code) { code = it }
         MyTextInput("Room", room) { room = it }
         showTimePicker(context, start,stringResource(id = R.string.course_select_start))
+        showTimePicker(context, end,stringResource(id = R.string.course_select_end))
         MultiSelectCheckBox(options,checkedState)
         Row(
             modifier = Modifier
@@ -167,7 +169,7 @@ fun AddCourse(
                     else if( type.value == null){
                         val warn = context.getString(R.string.course_noType)
                         Toast.makeText(context,warn,Toast.LENGTH_SHORT).show()}
-                    else if(start.value ==""){
+                    else if(start.value ==""||end.value ==""){
                         val warn = context.getString(R.string.course_noStart)
                         Toast.makeText(context,warn,Toast.LENGTH_SHORT).show()}
                     else {
@@ -180,7 +182,7 @@ fun AddCourse(
                         if(mon == false && tue == false && wed == false && thu == false && fri == false  ){
 
                         }else{
-                            addCourse(context, taskViewModel, title, type.value,code,room,start.value,mon!!,tue!!,wed!!,thu!!,fri!!)
+                            addCourse(context, taskViewModel, title, type.value,code,room,start.value,end.value,mon!!,tue!!,wed!!,thu!!,fri!!)
                             val text = context.getString(R.string.task_add) + " " + title
                             Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
                         }
@@ -204,9 +206,9 @@ fun AddCourse(
         }
 
 fun addCourse(context: Context,taskViewModel: TaskViewModel,title: String, type: String, code: String, room: String,
-               start: String,mon: Boolean,tue: Boolean, wed:Boolean, thu: Boolean, fri: Boolean) {
+               start: String,end:String,mon: Boolean,tue: Boolean, wed:Boolean, thu: Boolean, fri: Boolean) {
     Log.d("course", "reach here")
-    val course = Course(0,title,type,code,room,start,mon,tue,wed,thu,fri)
+    val course = Course(0,title,type,code,room,start,end,mon,tue,wed,thu,fri)
     Log.d("course", "$course")
     taskViewModel.addCourse(course)
 }

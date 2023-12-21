@@ -219,13 +219,13 @@ private fun BottomNavigation(selectedPage: String, onNavigation: (String) -> Uni
         )
     }
 }
+
 @Composable
 fun MyScreen(context: Context,taskViewModel: TaskViewModel) {
-    var currentPage by remember { mutableStateOf("course") }
-
+    val currentPage by taskViewModel.currentPage.collectAsState()
     Scaffold(
         bottomBar = { BottomNavigation(currentPage, onNavigation = { page ->
-            currentPage = page
+            taskViewModel.setCurrentPage(page)
         }) }
     ) { innerPadding ->
         when (currentPage) {

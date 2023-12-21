@@ -40,6 +40,7 @@
     <string name="Independent">独立的</string>
     <string name="Meeting">会议</string>
     <string name="course_select_start">选择开始时间:</string>
+    <string name="course_select_end">选择结束时间:</string>
     <string name="course_add_back">返回课程列表</string>
     <string name="course_noType">您必须选择一种类型</string>
     <string name="course_noStart">您必须选择开始时间</string>

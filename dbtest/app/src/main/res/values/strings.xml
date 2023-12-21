@@ -41,9 +41,10 @@
     <string name="Independent">Independent</string>
     <string name="Meeting">Meeting</string>
     <string name="course_select_start">Select start time:</string>
+    <string name="course_select_end">Select end time:</string>
     <string name="course_add_back">Back to courses list </string>
     <string name="course_noType">You must select a type! </string>
-    <string name="course_noStart">You must pick a start time!</string>
+    <string name="course_noStart">You must pick time!</string>
     <string name="French">French</string>
     <string name="Chinese">Chinese</string>
     <string name="hellouser">Hello User</string>

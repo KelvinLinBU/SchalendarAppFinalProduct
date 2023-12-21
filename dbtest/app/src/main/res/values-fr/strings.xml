@@ -40,6 +40,7 @@
     <string name="Independent">Indépendant</string>
     <string name="Meeting">Réunion</string>
     <string name="course_select_start">Sélectionnez l\'heure de début:</string>
+    <string name="course_select_end">Sélectionnez l\'heure de début:</string>
     <string name="course_add_back">Retour à la liste des cours</string>
     <string name="course_noType">Vous devez sélectionner un type!</string>
     <string name="course_noStart">Vous devez choisir une heure de début!</string>

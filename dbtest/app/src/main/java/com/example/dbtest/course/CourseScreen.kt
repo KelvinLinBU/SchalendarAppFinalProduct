@@ -66,6 +66,7 @@ import com.example.dbtest.task.Addtask
 import com.example.dbtest.task.EmptyTasksImage
 import com.example.dbtest.task.TaskApp
 import com.example.dbtest.ui.theme.BasicsCodelabTheme
+import com.example.dbtest.weatherAPI.weatherSet
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.net.URL
@@ -298,32 +299,25 @@ fun kelvinToFahrenheit(kelvin: Double): Double {
 }
 
 @Composable
-fun CourseNoAdd(context: Context, taskViewModel: TaskViewModel, modifier: Modifier) {
+fun CourseNoAdd(context: Context,taskViewModel:TaskViewModel,modifier: Modifier){
     var shouldShowWeather by rememberSaveable { mutableStateOf(false) }
     var weatherData by remember { mutableStateOf("") } // Holds weather data
 
     LaunchedEffect(shouldShowWeather) {
-        if (shouldShowWeather) {
-            val weatherInfo = fetchWeatherData()
-            weatherInfo?.let { (temperature, windSpeed, weatherDescription) ->
-                val fahrenheitTemperature = kelvinToFahrenheit(temperature)
-                val messagetemp = "Temp: $fahrenheitTemperature °F"
-                val celsiusTemperature = kelvinToCelsius(temperature)
-                val celsiusmessagetemp = "Temp: $celsiusTemperature °C"
-                val roundedFahrenheitTemp = String.format("%.2f", fahrenheitTemperature)
-                val roundedCelsiusTemp = String.format("%.2f", celsiusTemperature)
-                val windspeed = "Wind: $windSpeed"
-                val weatherdescription = "$weatherDescription"
-                showToast(context, roundedFahrenheitTemp)
-                showToast(context, windspeed)
-                showToast(context, weatherdescription)
-                showToast(context, getTemperatureRecommendation(celsiusTemperature))
-            }
+        val weatherInfo = fetchWeatherData()
+        weatherInfo?.let { (temperature, windSpeed, weatherDescription) ->
+            val fahrenheitTemperature = kelvinToFahrenheit(temperature)
+            val celsiusTemperature = kelvinToCelsius(temperature)
+            taskViewModel.SetroundedFahrenheitTemp(String.format("%.2f", fahrenheitTemperature))
+            taskViewModel.Setwindspeed("Wind: $windSpeed")
+            taskViewModel.Setweatherdescription("$weatherDescription")
+            taskViewModel.Setrecom(getTemperatureRecommendation(celsiusTemperature))
         }
     }
-
-
     Surface(modifier, color = MaterialTheme.colorScheme.background) {
+        if (shouldShowWeather) {
+            weatherSet(context,modifier,taskViewModel)
+        } else {
             var today = LocalDate.now().dayOfWeek.toString()
             var value = 1000
             if(today=="TUESDAY"){ value += 1
@@ -341,7 +335,7 @@ fun CourseNoAdd(context: Context, taskViewModel: TaskViewModel, modifier: Modifi
             TopBar(context, taskViewModel, day, left = { whichday -= 1 },right = { whichday += 1 },wea= {shouldShowWeather=true})
         }
     }
-
+}
 fun getTemperatureRecommendation(temperature: Double): String {
     return when {
         temperature < 0 -> "It's very cold! Bundle up!"
@@ -354,9 +348,8 @@ fun getTemperatureRecommendation(temperature: Double): String {
     }
 }
 suspend fun fetchWeatherData(): Triple<Double, Double, String>? {
-    // Replace 'YOUR_API_KEY' with your actual API key
     val apiKey = "f59dbd3ae07ebb65b3538ca10a8c2cb7"
-    val city = "New York" // Replace with the desired city
+    val city = "Boston"
     val url = "https://api.openweathermap.org/data/2.5/weather?q=$city&appid=$apiKey"
 
     return try {
