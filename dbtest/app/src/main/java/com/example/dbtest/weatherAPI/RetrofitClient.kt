@@ -7,6 +7,7 @@ object RetrofitClient {
     private const val BASE_URL = "https://api.openweathermap.org/"
     private var retrofit: Retrofit? = null
 
+    // Retrofit client for the weather API
     fun getRetrofitInstance(): Retrofit {
         if (retrofit == null) {
             retrofit = Retrofit.Builder()

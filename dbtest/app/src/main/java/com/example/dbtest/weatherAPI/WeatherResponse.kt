@@ -1,5 +1,7 @@
 package com.example.dbtest.weatherAPI
 
+
+// data classes for extracting response RETROFIT
 data class WeatherResponse(
     val weather: List<Weather>,
     val main: Main,
