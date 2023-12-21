@@ -163,7 +163,7 @@ private fun CourseContent(context: Context,taskViewModel: TaskViewModel,course: 
                         onClick = {
                             //using Google map
                             Log.d("MyTag", "$search")
-                            val gmmIntentUri = Uri.parse("geo:0,0?q=$search")
+                            val gmmIntentUri = Uri.parse("google.navigation:q=${search}&mode=transit")
                             Log.d("MyUri", "$gmmIntentUri")
                             val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
                             mapIntent.setPackage("com.google.android.apps.maps")
