@@ -216,16 +216,22 @@ fun CourseFinish(context: Context,taskViewModel: TaskViewModel, course: Course) 
     }
 }
 @Composable
-fun NoCoursesScreen() {
+fun NoCoursesScreen(taskViewModel: TaskViewModel) {
+    val name = taskViewModel.name.collectAsState().value
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
         Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             val color = colorResource(id = R.color.grey)
-            val text = stringResource(id = R.string.course_noCourse)
+            var text = stringResource(id = R.string.course_noCourse)
+            if(name=="Null"){
+                text = stringResource(id = R.string.need_login)
+            }
             EmptyTasksImage()
             Text(text = text, color = color, fontSize = 36.sp, fontWeight = FontWeight.Bold)
         }
@@ -246,8 +252,9 @@ private fun CoursesList(
     modifier: Modifier = Modifier,
     courses: List<Course>
 ) {
-    if(courses.isEmpty()){
-        NoCoursesScreen()
+    val name = taskViewModel.name.collectAsState().value
+    if(courses.isEmpty()||name=="Null"){
+        NoCoursesScreen(taskViewModel)
     }else {
         LazyColumn(modifier = modifier.padding(vertical = 4.dp)) {
             items(items = courses) { task ->
@@ -393,10 +400,6 @@ suspend fun fetchWeatherData(): Triple<Double, Double, String>? {
     } catch (e: Exception) {
         null // Handle error or return null for simplicity
     }
-}
-
-fun showToast(context: Context, message: String) {
-    Toast.makeText(context, message, Toast.LENGTH_LONG).show()
 }
 
 @Composable

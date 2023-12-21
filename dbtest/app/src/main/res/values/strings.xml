@@ -5,6 +5,8 @@
     <string name="bottom_navigation_home">Courses</string>
     <string name="bottom_navigation_task">Tasks</string>
     <string name="bottom_navigation_profile">Profile</string>
+    <string name="welcome">Welcome Back,</string>
+    <string name="need_login">Need to Login！</string>
     // Task screen
     <string name="task_noTask">No Task!</string>
     <string name="task_due">Due:  </string>

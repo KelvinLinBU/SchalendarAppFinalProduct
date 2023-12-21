@@ -71,16 +71,22 @@ fun EmptyTasksImage() {
     )
 }
 @Composable
-fun NoTasksScreen() {
+fun NoTasksScreen(taskViewModel: TaskViewModel) {
+    val name = taskViewModel.name.collectAsState().value
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
         Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             val color = colorResource(id = R.color.grey)
-            val text = stringResource(id = R.string.task_noTask)
+            var text = stringResource(id = R.string.task_noTask)
+            if(name=="Null"){
+                text = stringResource(id = R.string.need_login)
+            }
             EmptyTasksImage()
             Text(text = text, color = color, fontSize = 36.sp, fontWeight = FontWeight.Bold)
         }
@@ -189,8 +195,9 @@ private fun TasksList(
     taskViewModel: TaskViewModel,
     tasks: List<Task>
 ) {
-    if(tasks.isEmpty()){
-        NoTasksScreen()
+    val name = taskViewModel.name.collectAsState().value
+    if(tasks.isEmpty()||name == "Null"){
+        NoTasksScreen(taskViewModel)
     }else {
         LazyColumn(modifier = modifier.padding(vertical = 4.dp)) {
             items(items = tasks) { task ->

@@ -3,6 +3,8 @@
     <string name="app_name">Schalendar</string>
     <string name="show_less">Montrer moins</string>
     <string name="show_more">Montre plus</string>
+    <string name="welcome">Bienvenue de retour,</string>
+    <string name="need_login">Connectez-vous d‘abord!</string>
     <string name="bottom_navigation_home">Cours</string>
     <string name="bottom_navigation_task">Tâches</string>
     <string name="bottom_navigation_profile">Profil</string>

@@ -25,6 +25,12 @@ class TaskViewModel(private val repository: TaskRepository): ViewModel() {
     fun setCurrentPage(page: String) {
         _currentPage.value = page
     }
+    // login name
+    private val _name = MutableStateFlow("Null")
+    val name: StateFlow<String> = _name
+    fun setUserName(page: String) {
+        _name.value = page
+    }
     // weather data
     private val _roundedFahrenheitTemp = MutableStateFlow("")
     val roundedFahrenheitTemp: StateFlow<String> = _roundedFahrenheitTemp

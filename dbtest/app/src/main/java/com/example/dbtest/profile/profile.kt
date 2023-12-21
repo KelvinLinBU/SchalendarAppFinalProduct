@@ -38,14 +38,18 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.example.dbtest.ui.theme.BasicsCodelabTheme
 import com.google.android.gms.auth.api.Auth
 import com.google.android.gms.common.api.GoogleApiClient
 
-fun signOut(googleSignInClient: GoogleSignInClient, context: Context) {
+fun signOut(taskViewModel: TaskViewModel,googleSignInClient: GoogleSignInClient, context: Context) {
     googleSignInClient.signOut()
         .addOnCompleteListener {
             // Sign-out was successful
+            taskViewModel.setUserName("Null")
             Toast.makeText(context, "Signed out successfully", Toast.LENGTH_SHORT).show()
             // Perform additional actions after sign-out if needed
         }
@@ -56,7 +60,7 @@ fun signOut(googleSignInClient: GoogleSignInClient, context: Context) {
         }
 }
 @Composable
-fun GoogleSignInButton(googleSignInClient: GoogleSignInClient) {
+fun GoogleSignInButton(taskViewModel: TaskViewModel,googleSignInClient: GoogleSignInClient) {
     val context = LocalContext.current
     val activity = LocalContext.current as? Activity
     val signInLauncher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -64,6 +68,7 @@ fun GoogleSignInButton(googleSignInClient: GoogleSignInClient) {
         if (result.resultCode == Activity.RESULT_OK) {
 
             val account = GoogleSignIn.getLastSignedInAccount(context)
+            taskViewModel.setUserName(account?.displayName ?: "Unknown")
             val userName = account?.displayName ?: "Unknown"
             Toast.makeText(context, "Welcome $userName", Toast.LENGTH_LONG). show()
             // Handle the account details or navigate to a new screen
@@ -92,12 +97,12 @@ fun GoogleSignInButton(googleSignInClient: GoogleSignInClient) {
     }
 }
 @Composable
-fun SignOutButton(googleSignInClient: GoogleSignInClient) {
+fun SignOutButton(taskViewModel: TaskViewModel,googleSignInClient: GoogleSignInClient) {
     val context = LocalContext.current
 
     Button(
         onClick = {
-            signOut(googleSignInClient, context)
+            signOut(taskViewModel,googleSignInClient, context)
         },
         modifier = Modifier.fillMaxWidth()
     ) {
@@ -132,88 +137,46 @@ fun DropdownMenuSampleProfile(options:List<String>, selectedOption: MutableState
 
 
 @Composable
-fun ProfileScreen(googleSignInClient: GoogleSignInClient) {
+fun ProfileScreen(taskViewModel: TaskViewModel,googleSignInClient: GoogleSignInClient) {
 
-
-
-
-
-
-    val userName = stringResource(id = R.string.hellouser)
-    val userEmail = stringResource(id = R.string.hellouser2)
+    var userName = stringResource(id = R.string.hellouser)
+    val name = taskViewModel.name.collectAsState().value
+    if(name != "Null"){
+        userName = stringResource(id = R.string.welcome) + " " + name
+    }
     val userBio = stringResource(id = R.string.profileblurb)
-
-    var selectedType by remember { mutableStateOf("") }
-
-    val langOptions = listOf(
-        stringResource(id = R.string.French),
-        stringResource(id = R.string.Chinese)
-    )
-
-    // Your content here...
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
+            .padding(16.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         // User Name
         Text(
             text = userName,
-            color = Color.Black
+            style = MaterialTheme.typography.headlineMedium.copy(
+                fontWeight = FontWeight.ExtraBold),
         )
 
-        Spacer(modifier = Modifier.height(8.dp))
-
-        // User Email
-        Text(
-            text = userEmail,
-            color = Color.Gray
-        )
 
         Spacer(modifier = Modifier.height(16.dp))
 
         // User Bio
         Text(
             text = userBio,
-            color = Color.Black,
             maxLines = 30,
             overflow = TextOverflow.Ellipsis
         )
 
         Spacer(modifier = Modifier.height(8.dp))
-        var currentLocale by remember { mutableStateOf(Locale.getDefault()) }
-        var locale: Locale = Locale.ENGLISH
-        if (selectedType == "Chinese") {
-            locale = Locale("zh")
-        } else if (selectedType == "French") {
-            locale = Locale("fr")
-        } else if (selectedType == "English") {
-            locale = Locale("en")
-        }
-
-        //val onLocaleSelected: (Locale) -> Unit = { selectedType ->
-        //  if (locale != currentLocale) {
-        //    val context = LocalContext.current
-        //  updateLocale(context, selectedType)
-        //currentLocale = locale
-        //}
-        //}
-
-        //DropdownMenuSampleProfile(
-        //  langOptions,
-        // mutableStateOf(""),
-        //onLocaleSelected
-        //)
-
-
-
 
         Spacer(modifier = Modifier.height(16.dp))
 
         // Google Sign-In Button
-        GoogleSignInButton(googleSignInClient)
-        SignOutButton(googleSignInClient = googleSignInClient)
+        GoogleSignInButton(taskViewModel,googleSignInClient)
+        SignOutButton(taskViewModel,googleSignInClient = googleSignInClient)
     }
 
 
@@ -229,12 +192,12 @@ fun ProfileScreen(googleSignInClient: GoogleSignInClient) {
 fun ProfilePage(context: Context, taskViewModel: TaskViewModel, modifier: Modifier) {
     val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
         .requestEmail()
-        // Add more scopes if needed
         .build()
 
     val googleSignInClient = GoogleSignIn.getClient(LocalContext.current, gso)
-
-    Surface(modifier, color = MaterialTheme.colorScheme.background) {
-        ProfileScreen(googleSignInClient)
+    BasicsCodelabTheme {
+        Surface(modifier, color = MaterialTheme.colorScheme.background) {
+            ProfileScreen(taskViewModel, googleSignInClient)
+        }
     }
 }

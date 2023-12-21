@@ -3,6 +3,8 @@
     <string name="app_name">Schalendar</string>
     <string name="show_less">显示较少</string>
     <string name="show_more">展示更多</string>
+    <string name="welcome">欢迎回来，</string>
+    <string name="need_login">需要登录!</string>
     <string name="bottom_navigation_home">培训班</string>
     <string name="bottom_navigation_task">任务</string>
     <string name="bottom_navigation_profile">轮廓</string>
